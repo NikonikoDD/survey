@@ -547,6 +547,10 @@ input[type=text]{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10
       <div class="q">スタッフやお店への一言（任意）</div>
       <div class="qsub">改善してほしいこと、嬉しかったことなど何でも</div>
       <textarea id="f-request" placeholder="自由にどうぞ（任意）" rows="3"></textarea>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <button class="mic-btn" onclick="startMic('f-request','vs-req','mb-req')" id="mb-req">🎤 音声入力</button>
+        <span class="voice-st" id="vs-req" style="font-size:12px;color:#888"></span>
+      </div>
     </div>
     <button class="btn" id="save-btn" onclick="saveAll()">💾 回答を完了する</button>
     <button class="btn2" onclick="goStep(4)">← 戻る</button>
