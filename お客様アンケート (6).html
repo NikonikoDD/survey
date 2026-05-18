@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="お客様アンケート">
+<title>お客様アンケート</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,sans-serif;background:#f5f5f0;color:#1a1a1a}
+.app{max-width:680px;margin:0 auto}
+.nav{background:#fff;border-bottom:1px solid #ddd;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-title{font-size:15px;font-weight:700;color:#185FA5}
+.nav-tabs{display:flex;gap:5px}
+.tab{padding:6px 12px;border:1.5px solid #ddd;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#666}
+.tab.on{background:#185FA5;border-color:#185FA5;color:#fff}
+.badge{background:#E6F1FB;color:#0C447C;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-right:5px}
+.page{display:none;padding:14px}
+.page.on{display:block}
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.sec{font-size:10px;font-weight:700;color:#999;letter-spacing:.1em;text-transform:uppercase;margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid #eee}
+.q{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.qsub{font-size:11px;color:#888;margin-bottom:7px;margin-top:-4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{padding:8px 14px;border:1.5px solid #ddd;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#1a1a1a}
+.chip.on{background:#185FA5;border-color:#185FA5;color:#fff}
+select{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;color:#1a1a1a;background:#fff;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23999' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;background:#fff;resize:vertical;min-height:60px}
+input[type=text]{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;color:#1a1a1a;background:#fff}
+.btn{width:100%;padding:13px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;background:#185FA5;color:#fff;margin-top:6px}
+.btn2{width:100%;padding:11px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:#666;margin-top:5px}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:#ddd}
+.dot.done{background:#1D9E75}
+.dot.cur{background:#185FA5;transform:scale(1.4)}
+.steplbl{font-size:11px;color:#888;text-align:center;margin-bottom:10px}
+.cond{display:none}
+.rival-sec{border:1.5px solid #FAC775;border-radius:8px;padding:10px;background:#FFFBF2;margin-top:7px}
+.rival-sec:first-child{margin-top:0}
+.rival-ttl{font-size:11px;font-weight:700;color:#BA7517;margin-bottom:7px;text-transform:uppercase}
+.ibox{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:8px;padding:9px 12px;font-size:12px;color:#0C447C;margin-bottom:8px;font-weight:500}
+.al{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:9px;display:none;font-weight:500;background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.done-card{background:#E1F5EE;border:2px solid #5DCAA5;border-radius:12px;padding:22px;text-align:center;margin-bottom:12px}
+.done-icon{font-size:48px;margin-bottom:10px}
+.done-title{font-size:20px;font-weight:800;color:#085041;margin-bottom:7px}
+.done-body{font-size:13px;color:#0F6E56;line-height:1.7;font-weight:500}
+.ticket{border:2.5px dashed #1D9E75;border-radius:8px;padding:14px;text-align:center;margin:12px 0}
+.ticket-title{font-size:17px;font-weight:800;color:#085041;margin-bottom:3px}
+.ticket-sub{font-size:12px;color:#0F6E56;font-weight:500}
+.coupon{background:#185FA5;border-radius:12px;padding:16px;margin-bottom:12px;text-align:center}
+.coupon-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:4px;line-height:1.4}
+.coupon-title span{font-size:22px}
+.coupon-sub{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.staff-box{background:#FFF8E6;border:1.5px solid #FAC775;border-radius:12px;padding:13px;margin-bottom:12px}
+.staff-lbl{font-size:10px;font-weight:700;color:#BA7517;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.staff-txt{font-size:13px;color:#1a1a1a;line-height:1.85}
+.staff-txt strong{color:#185FA5;font-weight:700}
+.prow{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;background:#f5f5f0;border-radius:8px;margin-bottom:6px}
+.prow-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.prow-text{font-size:12px;color:#1a1a1a;line-height:1.6}
+.prow-text strong{display:block;font-weight:700;font-size:13px;margin-bottom:1px}
+.nodata{text-align:center;padding:32px;color:#999;font-size:13px}
+.pcard{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:14px;margin-bottom:10px}
+.pcard-num{font-size:10px;color:#999;margin-bottom:6px;font-weight:600}
+.pcard-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.pcard-av{width:44px;height:44px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pcard-title{font-size:14px;font-weight:700;color:#1a1a1a;line-height:1.4;margin-bottom:4px}
+.pcard-attrs{display:flex;flex-wrap:wrap;gap:4px}
+.pcard-attr{font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;background:#f5f5f0;color:#666}
+.pcard-body{font-size:13px;color:#1a1a1a;line-height:1.9;border-left:3px solid #185FA5;padding-left:10px;margin-bottom:9px}
+.pcard-quote{font-size:12px;color:#888;font-style:italic;border-top:1px solid #eee;padding-top:8px;line-height:1.6}
+.pcard-store{font-size:11px;color:#999;margin-top:5px;font-weight:500}
+.gen-btn{width:100%;padding:10px;border:1.5px solid #185FA5;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:#E6F1FB;color:#0C447C;margin-top:6px}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid #ddd;border-top-color:#185FA5;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.stat{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:12px;text-align:center}
+.stat-n{font-size:24px;font-weight:800;color:#185FA5}
+.stat-l{font-size:11px;color:#888;margin-top:2px}
+.bar-wrap{margin-top:6px}
+.bar-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.bar-lbl{font-size:11px;color:#555;min-width:85px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-lbl.short{min-width:60px}
+.bar-track{flex:1;background:#f0f0f0;border-radius:4px;height:18px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{font-size:11px;font-weight:600;color:#333;min-width:20px;text-align:right}
+.tag{display:inline-block;padding:2px 7px;border-radius:8px;font-size:11px;font-weight:600;background:#E6F1FB;color:#0C447C;margin:2px}
+.tag.w{background:#FAEEDA;color:#633806}
+.chan-chip{padding:7px 13px;border:1.5px solid #185FA5;border-radius:18px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:#185FA5}
+.chan-chip.on{background:#185FA5;color:#fff}
+.mic-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.mic-btn{width:46px;height:46px;border:1.5px solid #ddd;border-radius:50%;font-size:20px;cursor:pointer;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.voice-st{font-size:11px;color:#888;margin-top:5px;min-height:16px}
+.sheets-link{display:flex;align-items:center;gap:6px;font-size:13px;color:#0C447C;padding:10px 13px;border:1.5px solid #185FA5;border-radius:8px;background:#E6F1FB;margin-bottom:10px;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- NAV -->
+<div class="nav">
+  <div style="display:flex;align-items:center">
+    <span class="badge" id="badge">0人</span>
+    <span class="nav-title">お客様アンケート</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab on" onclick="showPage('top',this)">TOP</button>
+    <button class="tab" onclick="showPage('survey',this)">入力</button>
+    <button class="tab" onclick="showPage('persona',this)">ペルソナ</button>
+    <button class="tab" onclick="showPage('report',this)">分析</button>
+  </div>
+</div>
+
+<!-- TOP -->
+<div id="page-top" class="page on">
+  <div class="staff-box">
+    <div class="staff-lbl">👤 スタッフ用 声かけ例</div>
+    <div class="staff-txt">「少しだけお時間よろしいですか？<strong>サービスの改善と新しいお店を出すエリアの検討</strong>のためにアンケートをお願いしています。ご協力いただいた方に<strong>ラーメン券を1枚プレゼント</strong>しています。タップするだけで2〜3分で終わりますので、ぜひよろしくお願いします！」</div>
+  </div>
+  <div style="text-align:center;padding:14px 0 10px">
+    <div style="font-size:22px;font-weight:800;margin-bottom:3px">お客様アンケート</div>
+    <div style="font-size:13px;color:#888">ご協力のお願い</div>
+  </div>
+  <div class="coupon">
+    <div style="font-size:34px;margin-bottom:7px">🎟️</div>
+    <div class="coupon-title">ご回答いただいた方に<br><span>ラーメン券 1枚</span>プレゼント！</div>
+    <div class="coupon-sub">アンケート完了後にスタッフよりお渡しします</div>
+  </div>
+  <div class="card">
+    <div style="font-size:13px;line-height:1.95;margin-bottom:14px">いつもご来店いただき、ありがとうございます。<br><br>より良いサービスのご提供と、<strong style="color:#185FA5">新店舗の出店エリアの検討</strong>のため、お客様のご意見をお聞かせください。</div>
+    <div class="prow"><div class="prow-icon">⏱️</div><div class="prow-text"><strong>所要時間：約2〜3分</strong>タップするだけで簡単に答えられます</div></div>
+    <div class="prow"><div class="prow-icon">📍</div><div class="prow-text"><strong>新店舗エリアの検討に活用</strong>お客様の声が出店計画の参考になります</div></div>
+    <div class="prow"><div class="prow-icon">⭐</div><div class="prow-text"><strong>サービス・メニューの改善に活用</strong>より喜んでいただけるお店を目指します</div></div>
+    <div style="font-size:11px;color:#999;text-align:center;margin:12px 0 4px;line-height:1.6">答えたくない項目はスキップできます。ご回答内容は統計的に処理します。</div>
+    <button class="btn" onclick="goSurvey()">✏️ アンケートに答える →</button>
+  </div>
+</div>
+
+<!-- SURVEY -->
+<div id="page-survey" class="page">
+  <div id="al-ok" class="al"></div>
+  <div class="dots" id="dots"></div>
+  <div class="steplbl" id="steplbl"></div>
+
+  <!-- S1 -->
+  <div id="s1">
+    <div class="card">
+      <div class="sec">来店店舗</div>
+      <div class="q">今日来店した店舗 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <select id="f-store" onchange="updateNearby(this.value)">
+        <option value="">-- 店舗を選択してください --</option>
+        <optgroup label="なぎちゃんラーメン">
+          <option>5. 新宿ナギチャンラーメン</option>
+          <option>24. なぎちゃんラーメン 行徳店</option>
+          <option>26. なぎちゃんラーメン 元住吉店</option>
+          <option>28. なぎちゃんラーメン 大森駅前</option>
+          <option>30. なぎちゃんラーメン 西荻窪本店</option>
+          <option>32. なぎちゃんラーメン 白楽駅前店</option>
+          <option>33. なぎちゃんラーメン 浅草橋駅前店</option>
+          <option>34. なぎちゃんラーメン 江古田練馬旭丘店</option>
+          <option>35. なぎちゃんラーメン in白鳥会館(高田馬場)</option>
+          <option>36. なぎちゃんラーメン 江東橋二丁目店</option>
+        </optgroup>
+        <optgroup label="邦ちゃんラーメン">
+          <option>6. 邦ちゃんラーメン 新小岩店</option>
+          <option>13. 邦ちゃんラーメン 両国店</option>
+          <option>21. 中野邦ちゃんラーメン</option>
+        </optgroup>
+        <optgroup label="新橋ニューともちん">
+          <option>10. 新橋ニューともちん</option>
+          <option>22. 新橋ニューともちん 川崎駅前店</option>
+          <option>25. 新橋ニューともちん 神保町店</option>
+          <option>27. 新橋ニューともちん 蒲田西口駅前店</option>
+        </optgroup>
+        <optgroup label="えっちゃんラーメン">
+          <option>15. えっちゃんラーメン 田町店</option>
+          <option>17. 新館えっちゃんラーメン</option>
+        </optgroup>
+        <optgroup label="はるちゃんラーメン">
+          <option>11. はるちゃんラーメン</option>
+          <option>23. はるちゃんラーメン 総本店(東銀座店)</option>
+        </optgroup>
+        <optgroup label="その他">
+          <option>7. たきちゃんラーメン 虎ノ門</option>
+          <option>8. 高円寺ともちんラーメン</option>
+          <option>9. 新宿小滝橋 クマちゃんラーメン</option>
+          <option>12. シンちゃんラーメン（新宿南口店）</option>
+          <option>14. 川口トラちゃんラーメン</option>
+          <option>16. 神田ちえちゃんラーメン</option>
+          <option>18. 池袋ひろちゃんラーメン</option>
+          <option>19. 浅草生田庵</option>
+          <option>20. 渋谷かっちゃんラーメン</option>
+          <option>29. 田町油そばセンター</option>
+          <option>31. ラーメン凪 煮干王 蒲田西口駅前店</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="card">
+      <div class="sec">基本情報</div>
+      <div class="q">年齢層 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'age')">10代</button>
+        <button class="chip" onclick="sg(this,'age')">20代</button>
+        <button class="chip" onclick="sg(this,'age')">30代</button>
+        <button class="chip" onclick="sg(this,'age')">40代</button>
+        <button class="chip" onclick="sg(this,'age')">50代</button>
+        <button class="chip" onclick="sg(this,'age')">60代以上</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">性別 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'gender')">女性</button>
+        <button class="chip" onclick="sg(this,'gender')">男性</button>
+        <button class="chip" onclick="sg(this,'gender')">その他</button>
+        <button class="chip" onclick="sg(this,'gender')">答えたくない</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">ご出身地 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <select id="f-hometown">
+        <option value="">-- 都道府県を選択 --</option>
+        <optgroup label="北海道・東北"><option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option></optgroup>
+        <optgroup label="関東"><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>神奈川県</option></optgroup>
+        <optgroup label="東京（23区）"><option>千代田区</option><option>中央区</option><option>港区</option><option>新宿区</option><option>文京区</option><option>台東区</option><option>墨田区</option><option>江東区</option><option>品川区</option><option>目黒区</option><option>大田区</option><option>世田谷区</option><option>渋谷区</option><option>中野区</option><option>杉並区</option><option>豊島区</option><option>北区</option><option>荒川区</option><option>板橋区</option><option>練馬区</option><option>足立区</option><option>葛飾区</option><option>江戸川区</option></optgroup>
+        <optgroup label="東京（23区外）"><option>八王子市</option><option>立川市</option><option>武蔵野市</option><option>三鷹市</option><option>府中市</option><option>調布市</option><option>町田市</option><option>その他東京都内</option></optgroup>
+        <optgroup label="中部"><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option></optgroup>
+        <optgroup label="近畿"><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option></optgroup>
+        <optgroup label="中国・四国"><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option></optgroup>
+        <optgroup label="九州・沖縄"><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></optgroup>
+        <optgroup label="海外"><option>海外（アジア）</option><option>海外（欧米）</option><option>海外（その他）</option></optgroup>
+      </select>
+    </div>
+    <div class="card">
+      <div class="q">ご職業 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'job')">会社員</button>
+        <button class="chip" onclick="sg(this,'job')">会社役員・経営者</button>
+        <button class="chip" onclick="sg(this,'job')">自営業・フリーランス</button>
+        <button class="chip" onclick="sg(this,'job')">公務員・専門職</button>
+        <button class="chip" onclick="sg(this,'job')">パート・アルバイト</button>
+        <button class="chip" onclick="sg(this,'job')">主婦・主夫</button>
+        <button class="chip" onclick="sg(this,'job')">学生</button>
+        <button class="chip" onclick="sg(this,'job')">定年退職・その他</button>
+      </div>
+    </div>
+    <button class="btn" onclick="goStep(2)">次へ →</button>
+  </div>
+
+  <!-- S2 -->
+  <div id="s2" style="display:none">
+    <div class="card">
+      <div class="sec">来店回数・シーン</div>
+      <div class="q">このお店は何回目ですか？ <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'vc');onVc(this.textContent)">初めて</button>
+        <button class="chip" onclick="sg(this,'vc');onVc(this.textContent)">2回目</button>
+        <button class="chip" onclick="sg(this,'vc');onVc(this.textContent)">3〜5回</button>
+        <button class="chip" onclick="sg(this,'vc');onVc(this.textContent)">6〜10回</button>
+        <button class="chip" onclick="sg(this,'vc');onVc(this.textContent)">11回以上</button>
+      </div>
+    </div>
+    <div id="rep-block" class="cond">
+      <div class="card">
+        <div class="ibox">🔁 リピーターの方にお聞きします</div>
+        <div class="q">最近の来店頻度は？</div>
+        <div class="chips">
+          <button class="chip" onclick="sg(this,'freq')">週2回以上</button>
+          <button class="chip" onclick="sg(this,'freq')">週1回くらい</button>
+          <button class="chip" onclick="sg(this,'freq')">2週に1回くらい</button>
+          <button class="chip" onclick="sg(this,'freq')">月1回くらい</button>
+          <button class="chip" onclick="sg(this,'freq')">数ヶ月に1回</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="q">リピートする一番の理由は？</div>
+        <div class="chips">
+          <button class="chip" onclick="sg(this,'rep_reason')">料理が好き</button>
+          <button class="chip" onclick="sg(this,'rep_reason')">スタッフが好き</button>
+          <button class="chip" onclick="sg(this,'rep_reason')">雰囲気が落ち着く</button>
+          <button class="chip" onclick="sg(this,'rep_reason')">家・職場から近い</button>
+          <button class="chip" onclick="sg(this,'rep_reason')">価格が手頃</button>
+          <button class="chip" onclick="sg(this,'rep_reason')">なんとなく</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">今日はどんな場面で来ましたか？（複数可） <span style="color:#D85A30;font-size:11px">※必須</span>？（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'scene')">会社帰りに</button>
+        <button class="chip" onclick="mg(this,'scene')">会社の近くだから</button>
+        <button class="chip" onclick="mg(this,'scene')">学校の近くだから</button>
+        <button class="chip" onclick="mg(this,'scene')">買い物の途中に</button>
+        <button class="chip" onclick="mg(this,'scene')">知り合いの紹介で</button>
+        <button class="chip" onclick="mg(this,'scene')">通りかかって</button>
+        <button class="chip" onclick="mg(this,'scene')">昼間の食事に</button>
+        <button class="chip" onclick="mg(this,'scene')">夜の食事に</button>
+        <button class="chip" onclick="mg(this,'scene')">深夜・終電後に</button>
+        <button class="chip" onclick="mg(this,'scene')">食べたくなって</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">誰と来店？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'companion')">ひとりで</button>
+        <button class="chip" onclick="sg(this,'companion')">家族と</button>
+        <button class="chip" onclick="sg(this,'companion')">友人と</button>
+        <button class="chip" onclick="sg(this,'companion')">恋人と</button>
+        <button class="chip" onclick="sg(this,'companion')">同僚と</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">知ったきっかけ（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'source')">知人・友人の紹介</button>
+        <button class="chip" onclick="mg(this,'source')">Instagram・SNS</button>
+        <button class="chip" onclick="mg(this,'source')">食べログ・ホットペッパー</button>
+        <button class="chip" onclick="mg(this,'source')">Google検索</button>
+        <button class="chip" onclick="mg(this,'source')">YouTube・TikTok</button>
+        <button class="chip" onclick="mg(this,'source')">テレビ・雑誌</button>
+        <button class="chip" onclick="mg(this,'source')">近くで立寄り</button>
+        <button class="chip" onclick="mg(this,'source')">以前から常連</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">お店の好きなところ・選ぶ理由（複数可） <span style="color:#D85A30;font-size:11px">※必須</span>（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'like')">ラーメンが美味しい</button>
+        <button class="chip" onclick="mg(this,'like')">サービスがいい</button>
+        <button class="chip" onclick="mg(this,'like')">雰囲気がいい</button>
+        <button class="chip" onclick="mg(this,'like')">スタッフが優しい</button>
+        <button class="chip" onclick="mg(this,'like')">価格が適正</button>
+        <button class="chip" onclick="mg(this,'like')">熱々で出てくる</button>
+        <button class="chip" onclick="mg(this,'like')">チャーシューが多い</button>
+        <button class="chip" onclick="mg(this,'like')">飯が無料</button>
+        <button class="chip" onclick="mg(this,'like')">落ち着ける</button>
+        <button class="chip" onclick="mg(this,'like')">家・職場から近い</button>
+        <button class="chip" onclick="mg(this,'like')">深夜でも営業している</button>
+      </div>
+    </div>
+    <button class="btn" onclick="goStep(3)">次へ →</button>
+    <button class="btn2" onclick="goStep(1)">← 戻る</button>
+  </div>
+
+  <!-- S3 -->
+  <div id="s3" style="display:none">
+    <div class="card">
+      <div class="sec">ライバル調査</div>
+      <div class="q">このお店のほかによく利用するところ（複数可）</div>
+      <div class="rival-sec">
+        <div class="rival-ttl">📍 近くのラーメン・飲食店 <span style="color:#D85A30;font-size:11px">※必須</span></div>
+        <div style="font-size:11px;color:#BA7517;margin-bottom:8px;font-weight:500" id="nearby-note">店舗を選ぶと近くのお店が表示されます</div>
+        <div class="chips" id="nearby-chips">
+          <button class="chip" onclick="mg(this,'nearby')">日高屋</button>
+          <button class="chip" onclick="mg(this,'nearby')">松屋</button>
+          <button class="chip" onclick="mg(this,'nearby')">吉野家</button>
+          <button class="chip" onclick="mg(this,'nearby')">あまり使わない</button>
+        </div>
+      </div>
+      <div class="rival-sec">
+        <div class="rival-ttl">🏪 コンビニ</div>
+        <div class="chips">
+          <button class="chip" onclick="mg(this,'conv')">セブン-イレブン</button>
+          <button class="chip" onclick="mg(this,'conv')">ローソン</button>
+          <button class="chip" onclick="mg(this,'conv')">ファミリーマート</button>
+          <button class="chip" onclick="mg(this,'conv')">ミニストップ</button>
+          <button class="chip" onclick="mg(this,'conv')">あまり使わない</button>
+        </div>
+      </div>
+      <div class="rival-sec">
+        <div class="rival-ttl">🥩 牛丼・定食チェーン</div>
+        <div class="chips">
+          <button class="chip" onclick="mg(this,'gyudon')">吉野家</button>
+          <button class="chip" onclick="mg(this,'gyudon')">すき家</button>
+          <button class="chip" onclick="mg(this,'gyudon')">松屋</button>
+          <button class="chip" onclick="mg(this,'gyudon')">なか卯</button>
+          <button class="chip" onclick="mg(this,'gyudon')">やよい軒</button>
+          <button class="chip" onclick="mg(this,'gyudon')">大戸屋</button>
+          <button class="chip" onclick="mg(this,'gyudon')">あまり使わない</button>
+        </div>
+      </div>
+      <div class="rival-sec">
+        <div class="rival-ttl">🍕 ファミレス・その他</div>
+        <div class="chips">
+          <button class="chip" onclick="mg(this,'family')">サイゼリア</button>
+          <button class="chip" onclick="mg(this,'family')">ガスト</button>
+          <button class="chip" onclick="mg(this,'family')">マクドナルド</button>
+          <button class="chip" onclick="mg(this,'family')">餃子の王将</button>
+          <button class="chip" onclick="mg(this,'family')">モスバーガー</button>
+          <button class="chip" onclick="mg(this,'family')">あまり使わない</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="goStep(4)">次へ →</button>
+    <button class="btn2" onclick="goStep(2)">← 戻る</button>
+  </div>
+
+  <!-- S4 -->
+  <div id="s4" style="display:none">
+    <div class="card">
+      <div class="sec">来店動機・食べ方</div>
+      <div class="q">どんな時に利用しますか？（複数可） <span style="color:#D85A30;font-size:11px">※必須</span>？（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'motive')">ガッツリ食べたい時</button>
+        <button class="chip" onclick="mg(this,'motive')">自分へのご褒美の時</button>
+        <button class="chip" onclick="mg(this,'motive')">肉を食べたい時</button>
+        <button class="chip" onclick="mg(this,'motive')">辛いものが食べたい時</button>
+        <button class="chip" onclick="mg(this,'motive')">にんにくを食べたい時</button>
+        <button class="chip" onclick="mg(this,'motive')">急いでいる時</button>
+        <button class="chip" onclick="mg(this,'motive')">疲れた時の一杯</button>
+        <button class="chip" onclick="mg(this,'motive')">なんとなく食べたくなった</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">あなたの食べ方（複数可） <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'eat')">めしと一緒に食べる</button>
+        <button class="chip" onclick="mg(this,'eat')">チャーシューライスにして食べる</button>
+        <button class="chip" onclick="mg(this,'eat')">チャーシューにマヨネーズをたっぷり</button>
+        <button class="chip" onclick="mg(this,'eat')">にんにくをがっつり入れる</button>
+        <button class="chip" onclick="mg(this,'eat')">唐辛子をたくさんかける</button>
+        <button class="chip" onclick="mg(this,'eat')">胡椒をたっぷりかける</button>
+        <button class="chip" onclick="mg(this,'eat')">きゅうちゃんをめしにのせて食べる</button>
+        <button class="chip" onclick="mg(this,'eat')">スープまで全部飲む</button>
+        <button class="chip" onclick="mg(this,'eat')">麺を先に食べてからスープを飲む</button>
+        <button class="chip" onclick="mg(this,'eat')">チャーシューを最後まで取っておく</button>
+        <button class="chip" onclick="mg(this,'eat')">酢をたっぷりかける</button>
+        <button class="chip" onclick="mg(this,'eat')">チュバスコをたっぷりかける</button>
+        <button class="chip" onclick="mg(this,'eat')">サクッと食べてすぐ出る</button>
+        <button class="chip" onclick="mg(this,'eat')">ゆっくり時間をかけて食べる</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">普段の食事スタイルは主にどれですか？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'meal_style')">外食派（お店で食べる）</button>
+        <button class="chip" onclick="sg(this,'meal_style')">中食派（テイクアウト・デリバリー）</button>
+        <button class="chip" onclick="sg(this,'meal_style')">家食派（自炊）</button>
+        <button class="chip" onclick="sg(this,'meal_style')">バランスよく混ぜる</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">1週間に外食は何回くらいしますか？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'eat_freq')">7回以上（毎食外食）</button>
+        <button class="chip" onclick="sg(this,'eat_freq')">4〜6回</button>
+        <button class="chip" onclick="sg(this,'eat_freq')">2〜3回</button>
+        <button class="chip" onclick="sg(this,'eat_freq')">週1回</button>
+        <button class="chip" onclick="sg(this,'eat_freq')">月2〜3回</button>
+        <button class="chip" onclick="sg(this,'eat_freq')">月1回以下</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">外食するとき、このお店以外によく行くのはどんなお店ですか？（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'other_eat')">ラーメン店（他のお店）</button>
+        <button class="chip" onclick="mg(this,'other_eat')">牛丼・定食チェーン</button>
+        <button class="chip" onclick="mg(this,'other_eat')">ファミレス</button>
+        <button class="chip" onclick="mg(this,'other_eat')">ファストフード</button>
+        <button class="chip" onclick="mg(this,'other_eat')">居酒屋・飲み屋</button>
+        <button class="chip" onclick="mg(this,'other_eat')">カフェ・喫茶店</button>
+        <button class="chip" onclick="mg(this,'other_eat')">焼肉・寿司など専門店</button>
+        <button class="chip" onclick="mg(this,'other_eat')">コンビニ・弁当</button>
+        <button class="chip" onclick="mg(this,'other_eat')">デリバリー（Uber等）</button>
+        <button class="chip" onclick="mg(this,'other_eat')">町の定食屋・食堂</button>
+        <button class="chip" onclick="mg(this,'other_eat')">特にない</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">のれん組合の他のお店も利用しますか？ <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'other_chain')">はい、よく使う</button>
+        <button class="chip" onclick="sg(this,'other_chain')">たまに使う</button>
+        <button class="chip" onclick="sg(this,'other_chain')">ほぼここだけ</button>
+        <button class="chip" onclick="sg(this,'other_chain')">他の店は知らなかった</button>
+      </div>
+    </div>
+    <button class="btn" onclick="goStep(5)">次へ →</button>
+    <button class="btn2" onclick="goStep(3)">← 戻る</button>
+  </div>
+
+  <!-- S5 -->
+  <div id="s5" style="display:none">
+    <div class="card">
+      <div class="sec">今日のあなた</div>
+      <div class="q">今日はどんな気分ですか？ <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'mood')">最高！</button>
+        <button class="chip" onclick="sg(this,'mood')">いい感じ</button>
+        <button class="chip" onclick="sg(this,'mood')">いつもと一緒</button>
+        <button class="chip" onclick="sg(this,'mood')">まあまあかな</button>
+        <button class="chip" onclick="sg(this,'mood')">ちょっと疲れた</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">このお店に来て、どんな気持ちになりますか？ <span style="color:#D85A30;font-size:11px">※必須</span></div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'feeling')">ほっとする</button>
+        <button class="chip" onclick="sg(this,'feeling')">元気になる</button>
+        <button class="chip" onclick="sg(this,'feeling')">無心になれる</button>
+        <button class="chip" onclick="sg(this,'feeling')">満足する</button>
+        <button class="chip" onclick="sg(this,'feeling')">特に何も感じない</button>
+      </div>
+    </div>
+    <div class="card" style="border:1.5px solid #1D9E75">
+      <div class="sec" style="color:#1D9E75">あなた自身のこと</div>
+      <div class="q">今のあなたを一言で表すと？</div>
+      <div class="qsub">例：「忙しい」「最近いいことあった」「ひとり飯が好き」　※任意</div>
+      <div class="mic-row">
+        <input type="text" id="f-myself" placeholder="話すか入力してください">
+        <button class="mic-btn" onclick="startMic('f-myself','vs1','mb1')" id="mb1">🎤</button>
+      </div>
+      <div class="voice-st" id="vs1"></div>
+    </div>
+    <div class="card" style="border:1.5px solid #1D9E75">
+      <div class="q">ラーメンを食べるとき、あなたはどんな人ですか？</div>
+      <div class="qsub">例：「無心になれる」「これが唯一の贅沢」　※任意</div>
+      <div class="mic-row">
+        <input type="text" id="f-ramen" placeholder="話すか入力してください">
+        <button class="mic-btn" onclick="startMic('f-ramen','vs2','mb2')" id="mb2">🎤</button>
+      </div>
+      <div class="voice-st" id="vs2"></div>
+    </div>
+    <div class="card" style="border:1.5px solid #185FA5">
+      <div class="sec" style="color:#185FA5">あなたにとって「ちゃん」とは？</div>
+      <div class="q">このお店は、あなたにとってどんな存在ですか？</div>
+      <div class="chips" style="margin-bottom:10px">
+        <button class="chan-chip" onclick="pickChan(this)">毎日のルーティン</button>
+        <button class="chan-chip" onclick="pickChan(this)">疲れた日の癒し</button>
+        <button class="chan-chip" onclick="pickChan(this)">自分へのご褒美</button>
+        <button class="chan-chip" onclick="pickChan(this)">腹を満たす場所</button>
+        <button class="chan-chip" onclick="pickChan(this)">ひとりになれる場所</button>
+        <button class="chan-chip" onclick="pickChan(this)">元気をもらえる場所</button>
+        <button class="chan-chip" onclick="pickChan(this)">仕事帰りの一杯</button>
+        <button class="chan-chip" onclick="pickChan(this)">深夜の救世主</button>
+        <button class="chan-chip" onclick="pickChan(this)">気づいたら来ている店</button>
+        <button class="chan-chip" onclick="pickChan(this)">特別な存在</button>
+        <button class="chan-chip" onclick="pickChan(this)">なんとなく好きな店</button>
+      </div>
+      <div class="mic-row">
+        <input type="text" id="f-chan" placeholder="自分の言葉でどうぞ　※任意">
+        <button class="mic-btn" onclick="startMic('f-chan','vs3','mb3')" id="mb3">🎤</button>
+      </div>
+      <div class="voice-st" id="vs3"></div>
+    </div>
+    <button class="btn" id="save-btn" onclick="saveAll()">💾 回答を完了する</button>
+    <button class="btn2" onclick="goStep(4)">← 戻る</button>
+  </div>
+</div>
+
+<!-- DONE -->
+<div id="page-done" class="page">
+  <div class="done-card">
+    <div class="done-icon">✅</div>
+    <div class="done-title">ご回答ありがとうございました！</div>
+    <div class="done-body">スタッフにお声がけいただくと<br>ラーメン券をお渡しします。</div>
+    <div class="ticket">
+      <div class="ticket-title">🎟️ ラーメン券 1枚</div>
+      <div class="ticket-sub">スタッフへこの画面をお見せください</div>
+    </div>
+  </div>
+  <button class="btn" style="background:#555" onclick="nextCustomer()">次のお客様へ →</button>
+</div>
+
+<!-- PERSONA -->
+<div id="page-persona" class="page">
+  <a class="sheets-link" href="https://docs.google.com/spreadsheets/d/1B7HgzJbsQpHuMi3x0oF-o2-wQvw0EIyz50ZgzVNQcqE" target="_blank">📊 Googleスプレッドシートで全データを確認 →</a>
+  <button class="gen-btn" id="gen-all-btn" onclick="genAll()">✨ 全員のペルソナを一括生成</button>
+  <div id="persona-list" style="margin-top:10px"><div class="nodata">まだデータがありません</div></div>
+</div>
+
+<!-- REPORT -->
+<div id="page-report" class="page">
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-n" id="r-total">0</div><div class="stat-l">総回答数</div></div>
+    <div class="stat"><div class="stat-n" id="r-rep">--%</div><div class="stat-l">リピーター率</div></div>
+    <div class="stat"><div class="stat-n" id="r-age">--</div><div class="stat-l">最多年齢層</div></div>
+    <div class="stat"><div class="stat-n" id="r-tz">--</div><div class="stat-l">最多来店時間帯</div></div>
+  </div>
+  <div class="card"><div class="sec">来店時間帯</div><div class="bar-wrap" id="ch-tz"></div></div>
+  <div class="card"><div class="sec">年齢層</div><div class="bar-wrap" id="ch-age"></div></div>
+  <div class="card"><div class="sec">来店回数</div><div class="bar-wrap" id="ch-vc"></div></div>
+  <div class="card"><div class="sec">職業分布</div><div class="bar-wrap" id="ch-job"></div></div>
+  <div class="card"><div class="sec">来店シーン</div><div class="bar-wrap" id="ch-scene"></div></div>
+  <div class="card"><div class="sec">お店の好きなところ</div><div class="bar-wrap" id="ch-like"></div></div>
+  <div class="card"><div class="sec">食べ方スタイル</div><div class="bar-wrap" id="ch-eat"></div></div>
+  <div class="card"><div class="sec">今日の気分</div><div class="bar-wrap" id="ch-mood"></div></div>
+  <div class="card"><div class="sec">お店に来た気持ち</div><div class="bar-wrap" id="ch-feel"></div></div>
+  <div class="card"><div class="sec">ちゃんとはどんな存在</div><div class="bar-wrap" id="ch-chan"></div></div>
+  <div class="card"><div class="sec">近くの競合店</div><div class="bar-wrap" id="ch-nearby"></div></div>
+  <div class="card"><div class="sec">コンビニ</div><div class="bar-wrap" id="ch-conv"></div></div>
+  <div class="card"><div class="sec">牛丼・定食</div><div class="bar-wrap" id="ch-gyu"></div></div>
+  <div class="card"><div class="sec">ファミレス</div><div class="bar-wrap" id="ch-fam"></div></div>
+  <div class="card"><div class="sec">出身地</div><div id="r-towns" style="padding-top:4px"></div></div>
+  <div class="card"><div class="sec">お客様の声（今のあなたを一言）</div><div id="r-voices"></div></div>
+  <button class="btn" style="margin-top:4px" onclick="alert('Claudeのチャットで「発表会レポートを作って」と伝えてください')">発表会レポートを作成</button>
+</div>
+
+</div>
+<script>
+const SK='chan_survey_v1';
+const NEARBY={
+  '5. 新宿ナギチャンラーメン':['焼きあご塩らー麺 たかはし','らぁ麺 鳳仙花','どうとんぼり神座 新宿店','えびそば 一幻 新宿店','ラーメン二郎 歌舞伎町店','麺屋武蔵 新宿総本店','博多一幸舎 新宿店','桂花ラーメン 新宿東口店','らーめん ほりうち'],
+  '6. 邦ちゃんラーメン 新小岩店':['麺屋 一燈','ラーメン燈郎','自家製麺 鴨福','こってりらーめん せきやけ','ラーメン かいざん 新小岩店','純煮干しそば 證','麺屋 けんじ','ごっつ 新小岩店'],
+  '7. たきちゃんラーメン 虎ノ門':['一蘭 虎ノ門店','麺屋 武一','元楽 虎ノ門店','若武者 草庵 虎ノ門ヒルズ店','あらい（嵐伊）','虎ノ門 麺屋 みなと'],
+  '8. 高円寺ともちんラーメン':['麺屋 かなで','ラーメン健太','らーめん 太陽','田ぶし 高円寺本店','じもん','天下一品 高円寺店'],
+  '9. 新宿小滝橋 クマちゃんラーメン':['ラーメン二郎 小滝橋通り店','麺屋 翔 本店','創始 麺屋武蔵','らーめん ほりうち','風雲児','龍の家 新宿小滝橋通り店'],
+  '10. 新橋ニューともちん':['麺屋 周郷','新橋 纏','谷瀬家','らぁめん ほりうち 新橋店','きたかた食堂','博多長浜ラーメン 呑龍'],
+  '11. はるちゃんラーメン':['麺屋 周郷','新橋 纏','谷瀬家','きたかた食堂','銀座 朧月','麺処 ほん田 新橋店'],
+  '12. シンちゃんラーメン（新宿南口店）':['風雲児','つけ麺 五ノ神製作所','らーめん ほりうち','麺屋武蔵 新宿総本店','一蘭 新宿中央東口店'],
+  '13. 邦ちゃんラーメン 両国店':['中華洋食 50番','まぜそば しまや','麺や 黒琥 両国店','つけ麺専門 百の輔 両国店','北海道らーめん ひむろ 両国店'],
+  '14. 川口トラちゃんラーメン':['麺処 有彩','喜多方ラーメン 坂内 川口店','ラーメン 鷹の目 川口店','つけ麺 津気屋 川口','大勝軒 川口店'],
+  '15. えっちゃんラーメン 田町店':['ラーメン二郎 三田本店','三田製麺所 三田本店','麻布ラーメン 慶応三田店','博多一風堂 三田店','横濱家系 誰がために'],
+  '16. 神田ちえちゃんラーメン':['神田ラーメン わいず','カラシビ味噌らー麺 鬼金棒','塩生姜らー麺 MANNISH','麺屋 武蔵 神山','ラーメン盛太郎'],
+  '17. 新館えっちゃんラーメン':['焼きあご塩らー麺 たかはし','らぁ麺 鳳仙花','どうとんぼり神座 新宿店','ラーメン二郎 歌舞伎町店','麺屋武蔵 新宿総本店'],
+  '18. 池袋ひろちゃんラーメン':['ラーメン二郎 池袋東口店','麺創房 無敵家','東京ラーメン 屯ちん 池袋本店','節骨麺たいぞう 池袋総本店','一蘭 池袋店'],
+  '19. 浅草生田庵':['浅草名代らーめん 与ろゐ屋','らーめん 弁慶 浅草本店','麺みつヰ','喜多方ラーメン 坂内 浅草店','麺屋 音 浅草店'],
+  '20. 渋谷かっちゃんラーメン':['ちばから 渋谷道玄坂店','道玄坂 マンモス','喜楽','中華そば ぬかじ','横浜家系 侍 渋谷店','一蘭 渋谷店'],
+  '21. 中野邦ちゃんラーメン':['中華そば 青葉 中野本店','肉煮干し中華そば さいころ','横浜家系 二代目武道家','麺匠 ようすけ','担々麺 ほおずき'],
+  '22. 新橋ニューともちん 川崎駅前店':['玉 赤備','元祖ニュータンタンメン本舗 京町店','ラーメン二郎 京急川崎店','三田製麺所 川崎店','博多一風堂 川崎店'],
+  '23. はるちゃんラーメン 総本店(東銀座店)':['銀座 篝 本店','銀座 八五','支那麺 はしご 本店','麺屋 ひょっとこ','銀座 鴨そば 九代目 けいすけ'],
+  '24. なぎちゃんラーメン 行徳店':['支那ソバ 小むろ','にゃん福','どさん子娘','喜多方ラーメン 坂内 行徳店','ラーメン 葫'],
+  '25. 新橋ニューともちん 神保町店':['ラーメン二郎 神田神保町店','麺屋33','用心棒','鯛塩そば 灯花 神保町店','長尾中華そば 神田店'],
+  '26. なぎちゃんラーメン 元住吉店':['徳島NOODLE ぱどる','豚星。','横浜家系 てっぺん家','野方ホープ 元住吉店','ラーメン つじ田'],
+  '27. 新橋ニューともちん 蒲田西口駅前店':['煮干しつけ麺 宮元','ラーメン 鷹の目 蒲田店','横浜家系 志田家','らーめん 潤 蒲田店','らーめん 飛粋'],
+  '28. なぎちゃんラーメン 大森駅前':['ラーメン タロー 大森の陣','横浜家系 大森家','麦苗','三田製麺所 大森店','大森 貝ガラ屋'],
+  '29. 田町油そばセンター':['ラーメン二郎 三田本店','三田製麺所 三田本店','麻布ラーメン 慶応三田店','博多一風堂 三田店','むらさき山'],
+  '30. なぎちゃんラーメン 西荻窪本店':['麺尊 RAGE','パパパパパイン','熊本ラーメン ひごもんず 西荻窪店','支那そば いしはら','西荻燈'],
+  '31. ラーメン凪 煮干王 蒲田西口駅前店':['煮干しつけ麺 宮元','ラーメン 鷹の目 蒲田店','横浜家系 志田家','らーめん 飛粋','宍道湖しじみ中華蕎麦 琥珀'],
+  '32. なぎちゃんラーメン 白楽駅前店':['らーめん くり山','末廣家','極楽汁麺 らすた','ラーメン 登良治郎','六角家'],
+  '33. なぎちゃんラーメン 浅草橋駅前店':['らーめん かつお拳','らーめん 福籠','麺屋 まぜはる','浅草橋 蔵前 元楽','青島食堂 秋葉原店'],
+  '34. なぎちゃんラーメン 江古田練馬旭丘店':['麺や 金時','ラハメン ヤマン','横浜家系 五十三家','江古田 大勝軒','太陽のトマト麺 江古田店'],
+  '35. なぎちゃんラーメン in白鳥会館(高田馬場)':['らぁ麺 やまぐち','麺屋 武蔵 鷹虎','旨辛ラーメン 表裏','渡なべ','博多風龍 高田馬場店','鶏白湯ラーメン 陰山 高田馬場店'],
+  '36. なぎちゃんラーメン 江東橋二丁目店':['真鯛らーめん 麺魚 本店','中華そば 満鶏軒','北海道らーめん ひむろ 錦糸町店','太陽のトマト麺 錦糸町本店','双麺 錦糸町店']
+};
+
+let R=[],C={},charts={};
+const STEPS=['店舗・基本情報','来店回数・シーン','ライバル調査','来店動機・食べ方','あなたのこと'];
+
+function load(){try{const d=localStorage.getItem(SK);if(d)R=JSON.parse(d);}catch(e){R=[];}updateBadge();}
+function save(){try{localStorage.setItem(SK,JSON.stringify(R));}catch(e){}}
+function updateBadge(){document.getElementById('badge').textContent=R.length+'人';}
+
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  if(el)el.classList.add('on');
+  if(name==='persona')buildPersona();
+  if(name==='report')buildReport();
+}
+
+function goSurvey(){
+  showPage('survey',document.querySelectorAll('.tab')[1]);
+  goStep(1);
+}
+
+function goStep(n){
+  // 前のステップから進む場合は必須チェック
+  const cur=getCurrentStep();
+  if(n>cur){
+    const err=validateStep(cur);
+    if(err){showErr(err);return;}
+  }
+  hideErr();
+  for(let i=1;i<=5;i++)document.getElementById('s'+i).style.display=i===n?'block':'none';
+  const dots=document.getElementById('dots');
+  dots.innerHTML='';
+  for(let i=1;i<=5;i++){const d=document.createElement('div');d.className='dot'+(i<n?' done':i===n?' cur':'');dots.appendChild(d);}
+  document.getElementById('steplbl').textContent='ステップ '+n+'/5：'+STEPS[n-1];
+  window.scrollTo(0,0);
+}
+
+function getCurrentStep(){
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('s'+i);
+    if(el&&el.style.display!=='none')return i;
+  }
+  return 1;
+}
+
+function validateStep(step){
+  if(step===1){
+    if(!document.getElementById('f-store').value)return '今日来店した店舗を選択してください';
+    if(!C.age)return '年齢層を選択してください';
+    if(!C.gender)return '性別を選択してください';
+    if(!document.getElementById('f-hometown').value)return 'ご出身地を選択してください';
+    if(!C.job)return 'ご職業を選択してください';
+  }
+  if(step===2){
+    if(!C.vc)return '来店回数を選択してください';
+    if(!C.companion)return '誰と来店したか選択してください';
+    if(!C.scene||C.scene.length===0)return '来店シーンを選択してください（複数可）';
+    if(!C.source||C.source.length===0)return '知ったきっかけを選択してください';
+    if(!C.like||C.like.length===0)return 'お店の好きなところを選択してください';
+  }
+  if(step===3){
+    if(!C.nearby||C.nearby.length===0)return '近くのラーメン・飲食店を選択してください';
+  if(!C.conv||C.conv.length===0)return 'よく利用するコンビニを選択してください（あまり使わないでもOK）';
+    if(!C.conv||C.conv.length===0)return 'よく利用するコンビニ（複数可） <span style="color:#D85A30;font-size:11px">※必須</span>を選択してください';
+    if(!C.gyudon||C.gyudon.length===0)return '牛丼・定食チェーンを選択してください';
+    if(!C.family||C.family.length===0)return 'ファミレス等を選択してください';
+  }
+  if(step===4){
+    if(!C.motive||C.motive.length===0)return '来店動機を選択してください';
+    if(!C.eat||C.eat.length===0)return '食べ方を選択してください';
+    if(!C.meal_style)return '食事スタイルを選択してください';
+    if(!C.other_chain)return 'のれん組合の他のお店の利用を選択してください';
+  }
+  if(step===5){
+    if(!C.mood)return '今日の気分を選択してください';
+    if(!C.feeling)return 'お店に来た気持ちを選択してください';
+  }
+  return null;
+}
+
+function showErr(msg){
+  let el=document.getElementById('step-err');
+  if(!el){
+    el=document.createElement('div');
+    el.id='step-err';
+    el.style.cssText='background:#FCEBEB;border:1px solid #F09595;border-radius:8px;padding:10px 14px;font-size:13px;color:#791F1F;font-weight:500;margin-bottom:10px';
+    const survey=document.getElementById('page-survey');
+    survey.insertBefore(el,survey.firstChild);
+  }
+  el.style.display='block';
+  el.textContent='⚠️ '+msg;
+  window.scrollTo(0,0);
+}
+
+function hideErr(){
+  const el=document.getElementById('step-err');
+  if(el)el.style.display='none';
+}
+
+function sg(el,key){
+  const scope=el.closest('.card')||el.closest('.cond');
+  scope.querySelectorAll('[data-k="'+key+'"]').forEach(c=>{c.classList.remove('on');delete c.dataset.k;});
+  el.dataset.k=key;el.classList.add('on');C[key]=el.textContent.trim();
+}
+function mg(el,key){
+  el.classList.toggle('on');
+  if(!C[key])C[key]=[];
+  const t=el.textContent.trim();
+  if(el.classList.contains('on')){if(!C[key].includes(t))C[key].push(t);}
+  else C[key]=C[key].filter(x=>x!==t);
+}
+function onVc(v){
+  const rep=!['初めて','2回目'].includes(v);
+  document.getElementById('rep-block').style.display=rep?'block':'none';
+  if(!rep){delete C.freq;delete C.rep_reason;}
+}
+function pickChan(el){
+  document.querySelectorAll('.chan-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('f-chan').value=el.textContent.trim();
+}
+function updateNearby(store){
+  const el=document.getElementById('nearby-chips');
+  const note=document.getElementById('nearby-note');
+  if(!el)return;
+  const list=NEARBY[store];
+  if(!list){note.textContent='店舗を選ぶと近くのお店が表示されます';return;}
+  note.textContent='📍 '+store.split('. ')[1]+' の近く';
+  el.innerHTML=[...list,'あまり使わない'].map(r=>'<button class="chip" onclick="mg(this,\'nearby\')">'+r+'</button>').join('');
+  delete C.nearby;
+}
+function startMic(inputId,statusId,btnId){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){document.getElementById(statusId).textContent='音声入力非対応です';return;}
+  const rec=new SR();rec.lang='ja-JP';rec.interimResults=true;
+  const btn=document.getElementById(btnId);
+  btn.textContent='⏹';btn.style.background='#FFE0E0';btn.style.border='1.5px solid #D85A30';
+  document.getElementById(statusId).textContent='🔴 録音中... 話してください';
+  rec.onresult=function(e){
+    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
+    document.getElementById(inputId).value=t;
+    if(e.results[e.results.length-1].isFinal)document.getElementById(statusId).textContent='✓ 「'+t+'」';
+  };
+  rec.onend=function(){btn.textContent='🎤';btn.style.background='#fff';btn.style.border='1.5px solid #ddd';};
+  rec.onerror=function(){btn.textContent='🎤';btn.style.background='#fff';btn.style.border='1.5px solid #ddd';document.getElementById(statusId).textContent='エラー：もう一度お試しください';};
+  rec.start();
+}
+
+function saveAll(){
+  const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='保存中...';
+  const now=new Date();const h=now.getHours();
+  const tz=h>=6&&h<10?'朝（6〜10時）':h>=10&&h<14?'昼（10〜14時）':h>=14&&h<18?'夕方（14〜18時）':h>=18&&h<22?'夜（18〜22時）':h>=22?'深夜（22〜2時）':'早朝（2〜6時）';
+  const r={
+    id:Date.now(),
+    dt:now.toLocaleString('ja-JP'),
+    time:now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    tz:tz,
+    store:document.getElementById('f-store').value,
+    hometown:document.getElementById('f-hometown').value,
+    myself:document.getElementById('f-myself').value,
+    ramen:document.getElementById('f-ramen').value,
+    chan:document.getElementById('f-chan').value,
+    persona:null,
+    ...C
+  };
+  R.push(r);save();updateBadge();
+  C={};
+  document.querySelectorAll('.chip.on,.chan-chip.on').forEach(c=>{c.classList.remove('on');delete c.dataset.k;});
+  document.getElementById('rep-block').style.display='none';
+  ['f-store','f-hometown','f-myself','f-ramen','f-chan'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  btn.disabled=false;btn.textContent='💾 回答を完了する';
+  showPage('done',null);
+}
+
+function nextCustomer(){
+  showPage('top',document.querySelectorAll('.tab')[0]);
+}
+
+async function genOne(idx){
+  const btn=document.getElementById('gb-'+idx);
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>生成中...';}
+  const r=R[idx];
+  try{
+    const prompt=`飲食店お客様アンケートのデータからペルソナカードを作るプロです。以下のデータをもとに日本語でペルソナを作ってください。
+
+年齢=${r.age||'不明'} 性別=${r.gender||'不明'} 出身=${r.hometown||'不明'} 職業=${r.job||'不明'} 来店回数=${r.vc||'不明'} 来店時間帯=${r.tz||''} 頻度=${r.freq||''} 来店シーン=${Array.isArray(r.scene)?r.scene.join('・'):(r.scene||'')} 同伴=${r.companion||''} 好きな理由=${Array.isArray(r.like)?r.like.join('・'):(r.like||'')} 食べ方=${Array.isArray(r.eat)?r.eat.join('・'):(r.eat||'')} 気分=${r.mood||''} お店の気持ち=${r.feeling||''} 今の自分一言=${r.myself||''} ラーメン時の自分=${r.ramen||''} ちゃんとは=${r.chan||''}
+
+以下のJSON形式のみで返してください。前置き不要。
+{"title":"〇〇な△△代の□□","body":"3〜4文の人物描写。生活・価値観・このお店との関係が伝わるように。","quote":"その人が言いそうな一言（「」付き）"}`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const txt=data.content?.find(c=>c.type==='text')?.text||'{}';
+    R[idx].persona=JSON.parse(txt.replace(/```json|```/g,'').trim());
+  }catch(e){R[idx].persona={title:'生成エラー',body:'ネット接続を確認してください。',quote:''};}
+  save();buildPersona();
+}
+
+async function genAll(){
+  const btn=document.getElementById('gen-all-btn');btn.disabled=true;
+  for(let i=0;i<R.length;i++){
+    if(!R[i].persona){btn.innerHTML='<span class="spin"></span>生成中... '+(i+1)+'/'+R.length+'人';await genOne(i);}
+  }
+  btn.disabled=false;btn.textContent='✨ 全員のペルソナを一括生成';
+}
+
+function buildPersona(){
+  const el=document.getElementById('persona-list');
+  if(!R.length){el.innerHTML='<div class="nodata">まだデータがありません</div>';return;}
+  el.innerHTML=[...R].reverse().map((r,i)=>{
+    const idx=R.length-1-i;const p=r.persona;
+    const attrs=[r.age,r.gender,r.job,r.hometown,r.vc,r.tz].filter(Boolean);
+    return '<div class="pcard"><div class="pcard-num">#'+(idx+1)+'　'+r.dt+'</div>'+
+      '<div class="pcard-head"><div class="pcard-av">👤</div>'+
+      '<div><div class="pcard-title">'+(p?p.title:'ペルソナ未生成')+'</div>'+
+      '<div class="pcard-attrs">'+attrs.map(a=>'<span class="pcard-attr">'+a+'</span>').join('')+'</div></div></div>'+
+      (p?'<div class="pcard-body">'+p.body+'</div>'+(p.quote?'<div class="pcard-quote">'+p.quote+'</div>':''):'')+(r.store?'<div class="pcard-store">📍 '+r.store+'</div>':'')+
+      '<button class="gen-btn" id="gb-'+idx+'" onclick="genOne('+idx+')">'+(p?'🔄 再生成':'✨ ペルソナを生成する')+'</button></div>';
+  }).join('');
+}
+
+function cnt(key,excl){
+  const c={};
+  R.forEach(r=>{const v=r[key];if(!v)return;
+    if(Array.isArray(v))v.forEach(x=>{if(!excl||!excl.some(w=>x.includes(w)))c[x]=(c[x]||0)+1;});
+    else if(!excl||!excl.some(w=>v.includes(w)))c[v]=(c[v]||0)+1;});
+  return c;
+}
+function topKey(o){return Object.entries(o).sort((a,b)=>b[1]-a[1])[0]?.[0]||'--';}
+function renderBar(id,data,color,excl){
+  const el=document.getElementById(id);if(!el)return;
+  const c=cnt(data,excl);
+  const sorted=Object.entries(c).filter(([k])=>!excl||!excl.some(w=>k.includes(w))).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const max=sorted[0]?.[1]||1;
+  el.innerHTML=sorted.map(([l,v])=>'<div class="bar-row"><div class="bar-lbl">'+l+'</div><div class="bar-track"><div class="bar-fill" style="width:'+(v/max*100).toFixed(0)+'%;background:'+(color||'#185FA5')+'"></div></div><div class="bar-val">'+v+'</div></div>').join('');
+}
+
+function buildReport(){
+  if(!R.length)return;
+  document.getElementById('r-total').textContent=R.length;
+  const reps=R.filter(r=>r.vc&&!['初めて','2回目'].includes(r.vc));
+  document.getElementById('r-rep').textContent=Math.round(reps.length/R.length*100)+'%';
+  const ages=cnt('age');document.getElementById('r-age').textContent=topKey(ages);
+  const tzs=cnt('tz');document.getElementById('r-tz').textContent=(topKey(tzs)||'--').replace(/（.*）/,'');
+  const TZ=['朝（6〜10時）','昼（10〜14時）','夕方（14〜18時）','夜（18〜22時）','深夜（22〜2時）','早朝（2〜6時）'];
+  const tzc=cnt('tz');
+  document.getElementById('ch-tz').innerHTML=TZ.map(k=>'<div class="bar-row"><div class="bar-lbl">'+k+'</div><div class="bar-track"><div class="bar-fill" style="width:'+(((tzc[k]||0)/R.length)*100).toFixed(0)+'%;background:#185FA5"></div></div><div class="bar-val">'+(tzc[k]||0)+'</div></div>').join('');
+  const AO=['10代','20代','30代','40代','50代','60代以上'];
+  document.getElementById('ch-age').innerHTML=AO.map(k=>'<div class="bar-row"><div class="bar-lbl">'+k+'</div><div class="bar-track"><div class="bar-fill" style="width:'+(((ages[k]||0)/R.length)*100).toFixed(0)+'%;background:#1D9E75"></div></div><div class="bar-val">'+(ages[k]||0)+'</div></div>').join('');
+  const VO=['初めて','2回目','3〜5回','6〜10回','11回以上'];const vc=cnt('vc');
+  document.getElementById('ch-vc').innerHTML=VO.map(k=>'<div class="bar-row"><div class="bar-lbl">'+k+'</div><div class="bar-track"><div class="bar-fill" style="width:'+(((vc[k]||0)/R.length)*100).toFixed(0)+'%;background:#BA7517"></div></div><div class="bar-val">'+(vc[k]||0)+'</div></div>').join('');
+  renderBar('ch-job','job','#9F3FAC');
+  renderBar('ch-scene','scene','#185FA5');
+  renderBar('ch-like','like','#1D9E75');
+  renderBar('ch-eat','eat','#D85A30');
+  renderBar('ch-mood','mood','#185FA5');
+  renderBar('ch-feel','feeling','#1D9E75');
+  renderBar('ch-chan','chan','#185FA5');
+  renderBar('ch-nearby','nearby',null,['あまり']);
+  renderBar('ch-conv','conv',null,['あまり']);
+  renderBar('ch-gyu','gyudon',null,['あまり']);
+  renderBar('ch-fam','family',null,['あまり']);
+  const towns=[...new Set(R.map(r=>r.hometown).filter(Boolean))];
+  document.getElementById('r-towns').innerHTML=towns.map(t=>'<span class="tag">'+t+'</span>').join('')||'データなし';
+  const voices=R.filter(r=>r.myself).slice(-8).reverse();
+  document.getElementById('r-voices').innerHTML=voices.length?voices.map(r=>'<div style="padding:7px 0;border-bottom:1px solid #eee;font-size:12px"><span style="font-style:italic">「'+r.myself+'」</span><span style="color:#999;font-size:11px;margin-left:6px">'+[r.age,r.job].filter(Boolean).join('・')+'</span></div>').join(''):'まだデータがありません';
+}
+
+load();
+</script>
+</body>
+</html>
