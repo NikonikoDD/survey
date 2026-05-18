@@ -244,6 +244,31 @@ input[type=text]{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:12
         <button class="chip" onclick="sg(this,'job')">定年退職・その他</button>
       </div>
     </div>
+    <div class="card">
+      <div class="sec">あなたのライフスタイル</div>
+      <div class="q">食事に1食いくらくらいかけますか？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'meal_cost')">500円以下</button>
+        <button class="chip" onclick="sg(this,'meal_cost')">500〜1,000円</button>
+        <button class="chip" onclick="sg(this,'meal_cost')">1,000〜2,000円</button>
+        <button class="chip" onclick="sg(this,'meal_cost')">2,000円以上</button>
+        <button class="chip" onclick="sg(this,'meal_cost')">気分による</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">休日はどんな過ごし方が多いですか？（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'hobby')">家でゆっくり</button>
+        <button class="chip" onclick="mg(this,'hobby')">外出・買い物</button>
+        <button class="chip" onclick="mg(this,'hobby')">スポーツ・運動</button>
+        <button class="chip" onclick="mg(this,'hobby')">旅行・ドライブ</button>
+        <button class="chip" onclick="mg(this,'hobby')">映画・ゲーム</button>
+        <button class="chip" onclick="mg(this,'hobby')">グルメ・食べ歩き</button>
+        <button class="chip" onclick="mg(this,'hobby')">友人・家族と過ごす</button>
+        <button class="chip" onclick="mg(this,'hobby')">仕事・副業</button>
+        <button class="chip" onclick="mg(this,'hobby')">特にない</button>
+      </div>
+    </div>
     <button class="btn" onclick="goStep(2)">次へ →</button>
   </div>
 
@@ -861,7 +886,7 @@ async function genOne(idx){
   try{
     const prompt=`飲食店お客様アンケートのデータからペルソナカードを作るプロです。以下のデータをもとに日本語でペルソナを作ってください。
 
-年齢=${r.age||'不明'} 性別=${r.gender||'不明'} 出身=${r.hometown||'不明'} 職業=${r.job||'不明'} 来店回数=${r.vc||'不明'} 来店時間帯=${r.tz||''} 頻度=${r.freq||''} 来店シーン=${Array.isArray(r.scene)?r.scene.join('・'):(r.scene||'')} 同伴=${r.companion||''} 好きな理由=${Array.isArray(r.like)?r.like.join('・'):(r.like||'')} 食べ方=${Array.isArray(r.eat)?r.eat.join('・'):(r.eat||'')} 気分=${r.mood||''} お店の気持ち=${r.feeling||''} 今の自分一言=${r.myself||''} ラーメン時の自分=${r.ramen||''} ちゃんとは=${r.chan||''}
+年齢=${r.age||'不明'} 性別=${r.gender||'不明'} 出身=${r.hometown||'不明'} 職業=${r.job||'不明'} 来店回数=${r.vc||'不明'} 来店時間帯=${r.tz||''} 頻度=${r.freq||''} 来店シーン=${Array.isArray(r.scene)?r.scene.join('・'):(r.scene||'')} 同伴=${r.companion||''} 好きな理由=${Array.isArray(r.like)?r.like.join('・'):(r.like||'')} 食べ方=${Array.isArray(r.eat)?r.eat.join('・'):(r.eat||'')} 食事単価=${r.meal_cost||''} 趣味・休日=${Array.isArray(r.hobby)?r.hobby.join('・'):(r.hobby||'')} 気分=${r.mood||''} お店の気持ち=${r.feeling||''} 今の自分一言=${r.myself||''} ラーメン時の自分=${r.ramen||''} ちゃんとは=${r.chan||''}
 
 以下のJSON形式のみで返してください。前置き不要。
 {"title":"〇〇な△△代の□□","body":"3〜4文の人物描写。生活・価値観・このお店との関係が伝わるように。","quote":"その人が言いそうな一言（「」付き）"}`;
