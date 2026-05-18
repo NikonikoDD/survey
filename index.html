@@ -545,6 +545,46 @@ input[type=text]{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10
       </div>
       <div class="voice-st" id="vs3"></div>
     </div>
+    <div class="card">
+      <div class="sec">また来たいですか？</div>
+      <div class="q">このお店にまた来たいと思いますか？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'revisit')">絶対また来る</button>
+        <button class="chip" onclick="sg(this,'revisit')">たぶん来る</button>
+        <button class="chip" onclick="sg(this,'revisit')">わからない</button>
+        <button class="chip" onclick="sg(this,'revisit')">あまり来ないと思う</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">このお店を友人・知人に勧めたいですか？</div>
+      <div class="chips">
+        <button class="chip" onclick="sg(this,'nps')">ぜひ勧めたい</button>
+        <button class="chip" onclick="sg(this,'nps')">まあ勧めたい</button>
+        <button class="chip" onclick="sg(this,'nps')">どちらでもない</button>
+        <button class="chip" onclick="sg(this,'nps')">あまり勧めたくない</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec">お店へのご要望</div>
+      <div class="q">今後こんなサービス・メニューがあったらいいなと思うことはありますか？（複数可）</div>
+      <div class="chips">
+        <button class="chip" onclick="mg(this,'request')">深夜メニューを増やしてほしい</button>
+        <button class="chip" onclick="mg(this,'request')">テイクアウトをしたい</button>
+        <button class="chip" onclick="mg(this,'request')">デリバリーに対応してほしい</button>
+        <button class="chip" onclick="mg(this,'request')">限定メニューをもっと出してほしい</button>
+        <button class="chip" onclick="mg(this,'request')">ポイントカードがほしい</button>
+        <button class="chip" onclick="mg(this,'request')">スマホで注文したい</button>
+        <button class="chip" onclick="mg(this,'request')">席の予約をしたい</button>
+        <button class="chip" onclick="mg(this,'request')">Wi-Fiがほしい</button>
+        <button class="chip" onclick="mg(this,'request')">禁煙・分煙してほしい</button>
+        <button class="chip" onclick="mg(this,'request')">特になし</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q">スタッフやお店への一言（任意）</div>
+      <div class="qsub">改善してほしいこと、嬉しかったことなど何でも</div>
+      <textarea id="f-request" placeholder="自由にどうぞ（任意）" rows="3"></textarea>
+    </div>
     <button class="btn" id="save-btn" onclick="saveAll()">💾 回答を完了する</button>
     <button class="btn2" onclick="goStep(4)">← 戻る</button>
   </div>
@@ -610,10 +650,10 @@ const NEARBY={
   '10. 新橋ニューともちん':['麺屋 周郷','新橋 纏','谷瀬家','らぁめん ほりうち 新橋店','きたかた食堂','博多長浜ラーメン 呑龍'],
   '11. はるちゃんラーメン':['麺屋 周郷','新橋 纏','谷瀬家','きたかた食堂','銀座 朧月','麺処 ほん田 新橋店'],
   '12. シンちゃんラーメン（新宿南口店）':['風雲児','つけ麺 五ノ神製作所','らーめん ほりうち','麺屋武蔵 新宿総本店','一蘭 新宿中央東口店'],
-  '13. 邦ちゃんラーメン 両国店':['中華洋食 50番','まぜそば しまや','麺や 黒琥 両国店','つけ麺専門 百の輔 両国店','北海道らーめん ひむろ 両国店'],
-  '14. 川口トラちゃんラーメン':['麺処 有彩','喜多方ラーメン 坂内 川口店','ラーメン 鷹の目 川口店','つけ麺 津気屋 川口','大勝軒 川口店'],
+  '13. 邦ちゃんラーメン 両国店':['舎鈴 両国駅前店','麺場 田所商店 江戸NOREN（味噌ラーメン）','ペッパーランチ 両国店','マクドナルド 両国駅西口店','日高屋 両国店','胡座（あぐら）','ラーメン花月嵐 両国店'],
+  '14. 川口トラちゃんラーメン':['ほおずき 川口','川口家','武蔵屋 川口','珍来 川口店','ラーメン鷹の目 川口店','つけ麺 津気屋 川口','中華ソバ 鳴門'],
   '15. えっちゃんラーメン 田町店':['ラーメン二郎 三田本店','三田製麺所 三田本店','麻布ラーメン 慶応三田店','博多一風堂 三田店','横濱家系 誰がために'],
-  '16. 神田ちえちゃんラーメン':['神田ラーメン わいず','カラシビ味噌らー麺 鬼金棒','塩生姜らー麺 MANNISH','麺屋 武蔵 神山','ラーメン盛太郎'],
+  '16. 神田ちえちゃんラーメン':['神田ラーメン わいず','カラシビ味噌らー麺 鬼金棒 神田本店','塩生姜らー麺 MANNISH','TOKYO RAMEN とうか','染井吉野','七はす'],
   '17. 新館えっちゃんラーメン':['焼きあご塩らー麺 たかはし','らぁ麺 鳳仙花','どうとんぼり神座 新宿店','ラーメン二郎 歌舞伎町店','麺屋武蔵 新宿総本店'],
   '18. 池袋ひろちゃんラーメン':['ラーメン二郎 池袋東口店','麺創房 無敵家','東京ラーメン 屯ちん 池袋本店','節骨麺たいぞう 池袋総本店','一蘭 池袋店'],
   '19. 浅草生田庵':['浅草名代らーめん 与ろゐ屋','らーめん 弁慶 浅草本店','麺みつヰ','喜多方ラーメン 坂内 浅草店','麺屋 音 浅草店'],
@@ -627,9 +667,9 @@ const NEARBY={
   '27. 新橋ニューともちん 蒲田西口駅前店':['煮干しつけ麺 宮元','ラーメン 鷹の目 蒲田店','横浜家系 志田家','らーめん 潤 蒲田店','らーめん 飛粋'],
   '28. なぎちゃんラーメン 大森駅前':['ラーメン タロー 大森の陣','横浜家系 大森家','麦苗','三田製麺所 大森店','大森 貝ガラ屋'],
   '29. 田町油そばセンター':['ラーメン二郎 三田本店','三田製麺所 三田本店','麻布ラーメン 慶応三田店','博多一風堂 三田店','むらさき山'],
-  '30. なぎちゃんラーメン 西荻窪本店':['麺尊 RAGE','パパパパパイン','熊本ラーメン ひごもんず 西荻窪店','支那そば いしはら','西荻燈'],
+  '30. なぎちゃんラーメン 西荻窪本店':['中華そば よしかわ 西荻窪店','熊本ラーメン ひごもんず 西荻窪店','支那そば いしはら','舎鈴 西荻窪店','肉そば 仙','麺尊 RAGE'],
   '31. ラーメン凪 煮干王 蒲田西口駅前店':['煮干しつけ麺 宮元','ラーメン 鷹の目 蒲田店','横浜家系 志田家','らーめん 飛粋','宍道湖しじみ中華蕎麦 琥珀'],
-  '32. なぎちゃんラーメン 白楽駅前店':['らーめん くり山','末廣家','極楽汁麺 らすた','ラーメン 登良治郎','六角家'],
+  '32. なぎちゃんラーメン 白楽駅前店':['らーめん くり山','末廣家','つけ麺 くりやま','らーめん 白風','Ramen Torajiro 白楽','六角家'],
   '33. なぎちゃんラーメン 浅草橋駅前店':['らーめん かつお拳','らーめん 福籠','麺屋 まぜはる','浅草橋 蔵前 元楽','青島食堂 秋葉原店'],
   '34. なぎちゃんラーメン 江古田練馬旭丘店':['麺や 金時','ラハメン ヤマン','横浜家系 五十三家','江古田 大勝軒','太陽のトマト麺 江古田店'],
   '35. なぎちゃんラーメン in白鳥会館(高田馬場)':['らぁ麺 やまぐち','麺屋 武蔵 鷹虎','旨辛ラーメン 表裏','渡なべ','博多風龍 高田馬場店','鶏白湯ラーメン 陰山 高田馬場店'],
@@ -796,6 +836,8 @@ function saveAll(){
     store:document.getElementById('f-store').value,
     hometown:document.getElementById('f-hometown').value,
     myself:document.getElementById('f-myself').value,
+    request_chips:Array.isArray(C.request)?C.request.join(','):(C.request||''),
+    request_text:document.getElementById('f-request')?document.getElementById('f-request').value:'',
     ramen:document.getElementById('f-ramen').value,
     chan:document.getElementById('f-chan').value,
     persona:null,
@@ -812,7 +854,7 @@ function saveAll(){
   C={};
   document.querySelectorAll('.chip.on,.chan-chip.on').forEach(c=>{c.classList.remove('on');delete c.dataset.k;});
   document.getElementById('rep-block').style.display='none';
-  ['f-store','f-hometown','f-myself','f-ramen','f-chan'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['f-store','f-hometown','f-myself','f-ramen','f-chan','f-request'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   btn.disabled=false;btn.textContent='💾 回答を完了する';
   showPage('done',null);
 }
