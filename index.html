@@ -558,6 +558,10 @@ input[type=text]{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10
 
 <!-- REPORT -->
 <div id="page-report" class="page">
+  <div style="margin-bottom:12px">
+    <button class="btn" id="resend-btn" onclick="resendAll()" style="background:#E67E22;font-size:14px;padding:14px">📤 ローカルデータを全件スプレッドシートに再送信</button>
+    <div id="resend-status" style="text-align:center;font-size:12px;color:#888;margin-top:6px"></div>
+  </div>
   <div class="stat-grid">
     <div class="stat"><div class="stat-n" id="r-total">0</div><div class="stat-l">総回答数</div></div>
     <div class="stat"><div class="stat-n" id="r-rep">--%</div><div class="stat-l">リピーター率</div></div>
@@ -833,10 +837,8 @@ function saveAll(){
     tz:tz,
     store:document.getElementById('f-store').value,
     hometown:document.getElementById('f-hometown').value,
-    myself:document.getElementById('f-myself').value,
     request_chips:Array.isArray(C.request)?C.request.join(','):(C.request||''),
     request_text:document.getElementById('f-request')?document.getElementById('f-request').value:'',
-    ramen:document.getElementById('f-ramen').value,
     chan:document.getElementById('f-chan').value,
     persona:null,
     ...C
@@ -852,9 +854,29 @@ function saveAll(){
   C={};
   document.querySelectorAll('.chip.on,.chan-chip.on').forEach(c=>{c.classList.remove('on');delete c.dataset.k;});
   document.getElementById('rep-block').style.display='none';
-  ['f-store','f-hometown','f-myself','f-ramen','f-chan','f-request'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['f-store','f-hometown','f-chan','f-request'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   btn.disabled=false;btn.textContent='💾 回答を完了する';
   showPage('done',null);
+}
+
+async function resendAll(){
+  const btn=document.getElementById('resend-btn');
+  const status=document.getElementById('resend-status');
+  if(!R||R.length===0){status.textContent='データがありません';return;}
+  btn.disabled=true;
+  const URL='https://script.google.com/macros/s/AKfycby0vg2Fwnf4AP5Z9Xacv1v4G_KbuSX41frj9OhwWAajV2jMOnKMGeZYeE_J5lCl1oI/exec';
+  let ok=0,fail=0;
+  status.textContent=`送信中... 0/${R.length}件`;
+  for(let i=0;i<R.length;i++){
+    try{
+      await fetch(URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(R[i])});
+      ok++;
+    }catch(e){fail++;}
+    status.textContent=`送信中... ${i+1}/${R.length}件`;
+    await new Promise(r=>setTimeout(r,300));
+  }
+  btn.disabled=false;
+  status.textContent=`✅ 完了！ ${ok}件送信しました${fail>0?' (失敗:'+fail+'件)':''}`;
 }
 
 function nextCustomer(){
